@@ -1,7 +1,7 @@
 
 from ninja_extra import NinjaExtraAPI, api_controller, http_get
 from ninja import Schema
-from .queries import insertar_producto, lista_productos, producto_id, modificar_producto, elimina_prod, puntuar, producto_id_normal, search_product_by_name_desc
+from .queries import insertar_producto, lista_productos, producto_id, modificar_producto, elimina_prod, puntuar, producto_id_normal, busqueda_react
 from typing import Optional
 from ninja.security import django_auth
 from ninja.security import HttpBearer
@@ -51,15 +51,6 @@ class SuccessResponseSchema(Schema):
     message: str
 
 
-# Lista Productos
-# @api.get("/listaproductos", tags=['Lista productos'],response={202: list[ProductSchema], 404:ErrorSchema})
-# def lista_prod(request, desde: Optional[int] = 0, hasta: Optional[int] = 10):
-# 	try:
-# 		qs = lista_productos()
-# 		resultados = qs[desde:hasta]
-# 		return 202,resultados
-# 	except:
-# 		return 404, {'message': 'no encontrado'}
 
 @api.get("/listaproductos", tags=['Get list of products'],  response={202: list[ProductSchema], 404:ErrorSchema})
 def lista_prod(request, since:int, to:int):
@@ -113,7 +104,7 @@ def EliminarProducto(request, id : str):
 
 #modifica la puntuacion de un producto
 @api.put("/puntuar/{id}/{rating}", tags=['Modifica puntuacion'], response={202: ProductSchema, 404: ErrorSchema})
-def modify_rating(request, id: int, rating: int):
+def modificar_rating(request, id: int, rating: int):
     try:
         resultado = puntuar(id, rating)
         return 202, resultado
@@ -132,10 +123,10 @@ def get_product(request, id:int):
         return 404, {'message': 'the product could not be found'}
 
 
-@api.get("/searchproduct", tags=['Search product by name or description'], response={202: list[ProductSchema], 404:ErrorSchema})
-def search_product(request, to_find: str):
+@api.get("/buscaproducto", tags=['Search product by name or description'], response={202: list[ProductSchema], 404:ErrorSchema})
+def busca_producto(request, to_find: str):
     try:
-        return 202, search_product_by_name_desc(to_find)
+        return 202, busqueda_react(to_find)
     
     except:
         return 404, {'message': 'no products'}

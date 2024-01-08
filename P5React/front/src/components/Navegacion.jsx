@@ -12,7 +12,7 @@ export default function Navegacion({cambiado, setProductosF,categorias}) {
 
     const handleSearch = async (event) => {
         event.preventDefault();
-        const response = await fetch(`http://localhost:8000/etienda/api/searchproduct?to_find=${searchTerm}`);
+        const response = await fetch(`http://localhost:8000/etienda/api/buscaproducto?to_find=${searchTerm}`);
         const data = await response.json();
         setProductosF(data);
     };
@@ -31,10 +31,13 @@ export default function Navegacion({cambiado, setProductosF,categorias}) {
                     navbarScroll
                 >
                     <NavDropdown title="Categories" id="navbarScrollingDropdown">
-                        {categorias.map((category, index) => (
-                            <NavDropdown.Item key={index} href="#">{category}</NavDropdown.Item>
-                        ))}
+                    {categorias.map((category, index) => (
+                        <NavDropdown.Item key={index} onClick={(event) => cambiado({ target: { value: category } })}>
+                        {category}
+                        </NavDropdown.Item>
+                    ))}
                     </NavDropdown>
+
                 </Nav>
                 <Form className="d-flex" onSubmit={handleSearch}>
                     <Form.Control

@@ -62,6 +62,7 @@ def lista_productos():
         p["price"] = p.get("precio")
         p["description"] = p.get("descripción")  
         p["category"] = p.get("categoría") 
+        p["image"] = p.get("imágen")
         p["rating"] = {"rate": p["rating"]["puntuación"], "count": p["rating"]["cuenta"]} 
         
         result.append(p)
@@ -154,25 +155,28 @@ def puntuar(id, rating):
         logger.info("La puntuación no ha podido ser modificada")
 
 
-def search_product_by_name_desc(to_find):
+def busqueda_react(to_find):
     query = {
         "$or": [
-            {"nombre": {"$regex":f"\\b{to_find}\\b", "$options": "i"}},
-            {"descripción": {"$regex":f"\\b{to_find}\\b", "$options": "i"}}   
+            {"nombre": {"$regex": f"\\b{to_find}\\b", "$options": "i"}},
+            {"descripción": {"$regex": f"\\b{to_find}\\b", "$options": "i"}}
         ]
     }
-    
+
     products = productos_collection.find(query)
     result = []
+
     for p in products:
-        p["id"] = str(p.get("_id"))
-        del p["_id"]
-        p["title"] = p.get("nombre")
-        p["price"] = p.get("precio")
-        p["description"] = p.get("descripción")  
-        p["category"] = p.get("categoría") 
-        p["rating"] = {"rate": p["rating"]["puntuación"], "count": p["rating"]["cuenta"]} 
-        
-        result.append(p)
-        
+        product_dict = {
+            "id": str(p.get("_id")),
+            "title": p.get("nombre"),
+            "price": p.get("precio"),
+            "description": p.get("descripción"),
+            "category": p.get("categoría"),
+            "image": p.get("imágen"),
+            "rating": {"rate": p["rating"]["puntuación"], "count": p["rating"]["cuenta"]}
+        }
+
+        result.append(product_dict)
+
     return result
